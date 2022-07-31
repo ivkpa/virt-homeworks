@@ -4,30 +4,6 @@
 Поэтому в рамках первого *необязательного* задания предлагается завести свою учетную запись в AWS (Amazon Web Services) или Yandex.Cloud.
 Идеально будет познакомится с обоими облаками, потому что они отличаются. 
 
-## Задача 1 (вариант с AWS). Регистрация в aws и знакомство с основами (необязательно, но крайне желательно).
-
-Остальные задания можно будет выполнять и без этого аккаунта, но с ним можно будет увидеть полный цикл процессов. 
-
-AWS предоставляет достаточно много бесплатных ресурсов в первый год после регистрации, подробно описано [здесь](https://aws.amazon.com/free/).
-1. Создайте аккаут aws.
-1. Установите c aws-cli https://aws.amazon.com/cli/.
-1. Выполните первичную настройку aws-sli https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html.
-1. Создайте IAM политику для терраформа c правами
-    * AmazonEC2FullAccess
-    * AmazonS3FullAccess
-    * AmazonDynamoDBFullAccess
-    * AmazonRDSFullAccess
-    * CloudWatchFullAccess
-    * IAMFullAccess
-1. Добавьте переменные окружения 
-    ```
-    export AWS_ACCESS_KEY_ID=(your access key id)
-    export AWS_SECRET_ACCESS_KEY=(your secret access key)
-    ```
-1. Создайте, остановите и удалите ec2 инстанс (любой с пометкой `free tier`) через веб интерфейс. 
-
-В виде результата задания приложите вывод команды `aws configure list`.
-
 ## Задача 1 (Вариант с Yandex.Cloud). Регистрация в ЯО и знакомство с основами (необязательно, но крайне желательно).
 
 1. Подробная инструкция на русском языке содержится [здесь](https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-quickstart).
@@ -36,6 +12,14 @@ AWS предоставляет достаточно много бесплатн�
 базового терраформ конфига.
 4. Воспользуйтесь [инструкцией](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs) на сайте терраформа, что бы 
 не указывать авторизационный токен в коде, а терраформ провайдер брал его из переменных окружений.
+
+
+<b>`sudo apt-get update && sudo apt-get install -y gnupg software-properties-common`</b>  
+<b>`wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg`</b>  
+<b>`gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint`</b>  
+<b>`echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list`</b>  
+<b>`sudo apt update && sudo apt-get install terraform`</b>  
+<b>`YC_SERVICE_ACCOUNT_KEY_FILE=path_to_file`</b>  
 
 ## Задача 2. Создание aws ec2 или yandex_compute_instance через терраформ. 
 
