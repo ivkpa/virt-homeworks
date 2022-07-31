@@ -40,10 +40,10 @@
 1. Какие инструменты из уже используемых вы хотели бы использовать для нового проекта?  
 <b>Первый вариант: Packer, Terraform, Ansible, Docker, Teamcity</b>  
 1. Хотите ли рассмотреть возможность внедрения новых инструментов для этого проекта?  
-<b>Можно добавить использование docker-compose или развернуть кластер docker swarm. При необходимости сэкономить перейти с Teamcity на Gitlab.</b> 
+<b>Можно развернуть кластер docker swarm или использовать kubernetes в зависимости от технических и финансовых возможностей.</b> 
 
 Если для ответа на эти вопросы недостаточно информации, то напишите какие моменты уточните на совещании.  
-<b>Не указано какую инфраструктуру используем - облачную или собственную. В зависимости от инфраструктуры обсудить возможность и целесообразность перехода на kubernetes.</b>  
+<b>Не указано какую инфраструктуру используем - облачную или собственную. В зависимости от инфраструктуры и финансовых возможностей, обсудить целесообразность перехода на kubernetes.</b>  
 
 
 ## Задача 2. Установка терраформ. 
@@ -65,11 +65,19 @@
 В виде результата этой задачи приложите вывод `--version` двух версий терраформа доступных на вашем компьютере 
 или виртуальной машине.
 
-<b>`cd path/to/dir`</b>  
-<b>`wget https://hashicorp-releases.yandexcloud.net/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip`</b>  
-<b>`unzip terraform_1.1.7_linux_amd64.zip`</b>  
-<b>`ln -s /path/to/dir/terraform /usr/bin/terraform117`</b>  
-<b>`terraform117 --version`</b>  
+```
+new_tf_dir=/path/to/dir
+mkdir -p $new_tf_dir
+cd $new_tf_dir
+wget https://hashicorp-releases.yandexcloud.net/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip
+unzip terraform_1.1.7_linux_amd64.zip
+ln -s ${new_tf_dir}/terraform /usr/bin/terraform117
+terraform117 --version
+```
+<b>`Terraform v1.2.4 on linux_amd64`</b>  
+<b>`Terraform v1.1.7 on linux_amd64`</b>  
+
+
 ---
 
 ### Как cдавать задание
