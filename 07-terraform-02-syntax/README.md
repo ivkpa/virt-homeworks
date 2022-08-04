@@ -13,14 +13,6 @@
 4. Воспользуйтесь [инструкцией](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs) на сайте терраформа, что бы 
 не указывать авторизационный токен в коде, а терраформ провайдер брал его из переменных окружений.
 
-
-<b>`sudo apt-get update && sudo apt-get install -y gnupg software-properties-common`</b>  
-<b>`wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg`</b>  
-<b>`gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint`</b>  
-<b>`echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list`</b>  
-<b>`sudo apt update && sudo apt-get install terraform`</b>  
-<b>`YC_SERVICE_ACCOUNT_KEY_FILE=path_to_file`</b>  
-
 ## Задача 2. Создание aws ec2 или yandex_compute_instance через терраформ. 
 
 1. В каталоге `terraform` вашего основного репозитория, который был создан в начале курсе, создайте файл `main.tf` и `versions.tf`.
@@ -50,9 +42,85 @@
 
 
 В качестве результата задания предоставьте:
-1. Ответ на вопрос: при помощи какого инструмента (из разобранных на прошлом занятии) можно создать свой образ ami?
+1. Ответ на вопрос: при помощи какого инструмента (из разобранных на прошлом занятии) можно создать свой образ ami?  
+<b>Ответ:</b> Packer.
 1. Ссылку на репозиторий с исходной конфигурацией терраформа.  
- 
+<b>Ответ:</b>  
+
+<b>main.tf</b>
+```
+resource "yandex_vpc_network" "default" {
+    name = "net"
+}
+
+resource "yandex_vpc_subnet" "subnet01" {
+    name = "subnet01"
+    zone           = "ru-central1-a"
+    network_id     = "${yandex_vpc_network.default.id}"
+    v4_cidr_blocks = ["192.168.100.0/24"]
+}
+
+
+resource "yandex_compute_instance" "node01" {
+  name                      = "node01"
+  zone                      = "ru-central1-a"
+  hostname                  = "node01.netology.yc"
+
+  resources {
+    cores  = "2"
+    memory = "4"
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id    = "fd89n3ii46a2m3uffmdu"
+      name        = "root-node01"
+      type        = "network-nvme"
+      size        = "10"
+    }
+  }
+
+  network_interface {
+    subnet_id  = "${yandex_vpc_subnet.subnet01.id}"
+    nat        = true
+    ip_address = "192.168.100.11"
+  }
+
+  metadata = {
+    ssh-keys = "centos:${file("~/.ssh/id_rsa.pub")}"
+  }
+}
+```
+
+<b>provider.tf</b>  
+```
+# Provider
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+
+}
+
+provider "yandex" {
+#  service_account_key_file = "key.json" # or export YC_SERVICE_ACCOUNT_KEY_FILE
+#  cloud_id  = "cloud_id" # or export YC_CLOUD_ID
+#  folder_id = "folder_id" # or export YC_FOLDER_ID
+}
+```
+
+<b>output.tf</b>
+```
+output "internal_ip_address_node01" {
+  value = "${yandex_compute_instance.node01.network_interface.0.ip_address}"
+}
+
+output "external_ip_address_node01" {
+  value = "${yandex_compute_instance.node01.network_interface.0.nat_ip_address}"
+}
+```
 ---
 
 ### Как cдавать задание
